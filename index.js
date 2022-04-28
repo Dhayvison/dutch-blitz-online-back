@@ -8,10 +8,20 @@ const { Server } = require("socket.io");
 
 const io = new Server(server);
 
-io.on("connection", () => {
-  console.log("We have a new connection");
+io.on("connection", (socket) => {
+  socket.broadcast.emit("hi");
+
+  socket.on("chat message", (msg) => {
+    io.emit("chat message", msg);
+  });
+
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("chat message", { message: "bye! 👋" });
+  });
 });
 
-server.listen(3000, () => {
-  console.log("Listening on *:3000");
+app.get("/", (req, res) => {
+  res.sendFile(`${__dirname}/index.html`);
 });
+
+server.listen(3000);
