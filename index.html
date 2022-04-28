@@ -80,10 +80,13 @@
   });
 
   socket.on('hi', function (msg) {
-    alert(msg.message)
-    // item.textContent = "Say 'Hello' to new user!";
-    // messages.appendChild(item);
-    // window.scrollTo(0, document.body.scrollHeight);
+    var item = document.createElement('li');
+    var message = document.createElement('b');
+    item.className = 'list-group-item list-group-item-warning shadow-sm mb-3 border-start border-warning rounded';
+    message.textContent = "Say 'Hello' to new user!";
+
+    item.appendChild(message);
+    messages.appendChild(item);
   });
 </script>
 
