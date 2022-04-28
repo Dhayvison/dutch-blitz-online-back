@@ -70,6 +70,8 @@
   });
 
   socket.on('chat message', function (msg) {
+    var audio = new Audio('/assets/chat-notification.mp3');
+    audio.play();
     var item = document.createElement('li');
     var message = document.createElement('b');
     item.className = 'list-group-item shadow-sm mb-3 border-start border-primary rounded';
@@ -77,6 +79,7 @@
 
     item.appendChild(message);
     messages.appendChild(item);
+    item.scrollIntoView({ block: "end", behavior: "smooth" });
   });
 
   socket.on('hi', function (msg) {
@@ -87,6 +90,7 @@
 
     item.appendChild(message);
     messages.appendChild(item);
+    item.scrollIntoView({ block: "nearest", behavior: "smooth" });
   });
 </script>
 
