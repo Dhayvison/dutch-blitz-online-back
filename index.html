@@ -14,6 +14,16 @@
 
 <body>
 
+  <div class="btn-group m-3" role="group" aria-label="Basic example">
+    <button class="btn btn-light btn-sm input-group-text p-3" id="ping-test" data-bs-toggle="tooltip"
+      data-bs-placement="right" title="Tooltip on right">
+      <span class="material-icons">
+        network_ping
+      </span>
+    </button>
+    <div class="d-flex border border-light p-3" id="ping-result"> - ms </div>
+  </div>
+
   <button type="button"
     class="btn btn-primary position-absolute bottom-0 end-0 m-3 p-3 rounded-circle shadow d-flex justify-content-center align-items-center"
     data-bs-toggle="modal" data-bs-target="#chat-modal">
@@ -26,7 +36,9 @@
     <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="chat-modal-label">Chatzin do Junin</h5>
+          <h5 class="modal-title" id="chat-modal-label">
+            Chatzin do Junin
+          </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -36,7 +48,8 @@
           <form id="chat-form" class="col">
             <label for="messageInput" class="form-label">Digite sua mensagem</label>
             <div class="input-group">
-              <input type="text" id="messageInput" class="form-control" aria-label="Digite sua mensagem"></input>
+              <input type="text" id="messageInput" class="form-control" aria-label="Digite sua mensagem"
+                autocomplete="off"></input>
               <button type="submit" class="btn btn-primary input-group-text">
                 Enviar
               </button>
@@ -60,6 +73,8 @@
   const formChat = document.getElementById('chat-form');
   const inputChat = document.getElementById('messageInput');
   const messages = document.getElementById('messages');
+  const pingButton = document.getElementById('ping-test');
+  const pingResult = document.getElementById('ping-result');
 
   formChat.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -67,6 +82,16 @@
       socket.emit('chat message', { message: inputChat.value });
       inputChat.value = '';
     }
+  });
+
+  pingButton.addEventListener('click', () => {
+    socket.emit('ping', { date: new Date() });
+  });
+
+  socket.on('pong', ({ date }) => {
+    const nowDate = new Date();
+    const pingDate = new Date(date);
+    pingResult.textContent = `${nowDate - pingDate} ms`
   });
 
   socket.on('chat message', function (msg) {

@@ -19,6 +19,10 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     socket.broadcast.emit("chat message", { message: "bye! 👋" });
   });
+
+  socket.on("ping", (date) => {
+    socket.emit("pong", date);
+  });
 });
 
 app.get("/", (req, res) => {
