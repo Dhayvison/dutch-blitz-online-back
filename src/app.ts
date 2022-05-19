@@ -16,7 +16,12 @@ app.get('/status', (...[, response]) => {
 });
 
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CLIENT_ORIGIN,
+    methods: ['GET', 'POST'],
+  },
+});
 
 io.on('connection', socket => {
   console.log(warning`A user connected`);
@@ -42,4 +47,5 @@ app.use(express.static('public'));
 server.listen(process.env.PORT, () =>
   console.info(success`Server is running on port:`, process.env.PORT),
 );
+
 export { app };
