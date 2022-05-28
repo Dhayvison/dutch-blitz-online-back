@@ -48,7 +48,9 @@ class SocketConnection {
   }
 
   getMessages() {
-    messages.forEach(message => this.sendMessage(message));
+    messages.forEach(message => {
+      this.socket.emit('message', message);
+    });
   }
 
   handleMessage(text: string) {
