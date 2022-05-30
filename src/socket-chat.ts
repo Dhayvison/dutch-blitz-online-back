@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
 import { v4 as uuid } from 'uuid';
-import { error } from './utils/text-coloring';
+import { error, warning } from './utils/text-coloring';
 
 type ChatUser = {
   name: string;
@@ -82,6 +82,7 @@ class SocketConnection {
 
 function chat(io: Server) {
   io.on('connection', socket => {
+    console.log(warning`A user connected on: CHAT`);
     new SocketConnection(io, socket);
   });
 }
