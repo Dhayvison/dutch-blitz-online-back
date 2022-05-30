@@ -1,9 +1,8 @@
 import { Server, Socket } from 'socket.io';
 import { v4 as uuid } from 'uuid';
-import { error, warning } from './utils/text-coloring';
+import { error } from './utils/text-coloring';
 
 type ChatUser = {
-  id: string;
   name: string;
 };
 
@@ -32,6 +31,7 @@ class SocketConnection {
     this.socket = socket;
     this.io = io;
 
+    socket.on('user_name', name => this.handleSetSocketUserName(name));
     socket.on('get_messages', () => this.getMessages());
     socket.on('message', value => this.handleMessage(value));
     socket.on('disconnect', () => this.disconnect());
@@ -70,6 +70,10 @@ class SocketConnection {
     }, messageExpirationTimeMS);
   }
 
+  handleSetSocketUserName(name: string) {
+    users.set(this.socket, { name });
+  }
+
   disconnect() {
     console.log(error`A user disconnected on: CHAT`);
     users.delete(this.socket);
@@ -78,7 +82,6 @@ class SocketConnection {
 
 function chat(io: Server) {
   io.on('connection', socket => {
-    console.log(warning`A user connected on: CHAT`);
     new SocketConnection(io, socket);
   });
 }
