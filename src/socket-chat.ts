@@ -17,11 +17,6 @@ type ChatMessage = {
 const messages = new Set<ChatMessage>();
 const users = new Map<Socket, ChatUser>();
 
-const defaultUser = {
-  id: 'anon',
-  name: 'Anonymous',
-};
-
 const messageExpirationTimeMS = 5 * 60 * 1000; // 5 min
 
 class SocketConnection {
@@ -32,6 +27,10 @@ class SocketConnection {
     this.socket = socket;
     this.io = io;
 
+    const user = { id: uuid(), name: '' };
+    users.set(this.socket, user);
+
+    socket.on('user_name', name => this.handleSetSocketUserName(name));
     socket.on('get_messages', () => this.getMessages());
     socket.on('message', value => this.handleMessage(value));
     socket.on('disconnect', () => this.disconnect());
@@ -53,10 +52,19 @@ class SocketConnection {
     });
   }
 
+  cleanMessagesUser (user: ChatUser) {
+    messages.forEach(message => {
+      if (message.user === user){
+        messages.delete(message);
+        this.io.sockets.emit('delete_message', message.id);
+      }
+    });
+  }
+
   handleMessage(text: string) {
     const message = {
       id: uuid(),
-      user: users.get(this.socket) || defaultUser,
+      user: users.get(this.socket),
       text,
       time: Date.now(),
     };
@@ -68,6 +76,14 @@ class SocketConnection {
       messages.delete(message);
       this.io.sockets.emit('delete_message', message.id);
     }, messageExpirationTimeMS);
+  }
+
+  handleSetSocketUserName(name: string) {
+    const user = users.get(this.socket);
+    user.name = name;
+    users.set(this.socket, user);
+    this.cleanMessagesUser(user);
+    this.socket.emit('new_user', user.name);
   }
 
   disconnect() {
