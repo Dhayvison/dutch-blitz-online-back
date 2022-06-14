@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
-import ChatConnection from './connections/socket-chat';
-import GameConnection from './connections/socket-game';
+import ChatConnection from './connections/ChatConnection';
+import GameConnection from './connections/GameConnection';
 import { error, warning } from './utils/text-coloring';
 
 function socketConnection(io: Server) {

@@ -3,6 +3,13 @@ import Chat from '../models/Chat';
 import ChatMessage from '../models/ChatMessage';
 import User from '../models/User';
 
+enum ChatEvent {
+  userName = 'user_name',
+  message = 'message',
+  getMessages = 'get_messages',
+  deleteMessage = 'delete_message',
+}
+
 export default class ChatConnection {
   private io: Server;
   private socket: Socket;
@@ -15,18 +22,18 @@ export default class ChatConnection {
 
     this.chat.addUser(this.socket, '');
 
-    socket.on('user_name', name => this.handleSetSocketUserName(name));
-    socket.on('get_messages', () => this.getMessages());
-    socket.on('message', value => this.handleMessage(value));
+    socket.on(ChatEvent.userName, name => this.handleSetSocketUserName(name));
+    socket.on(ChatEvent.getMessages, () => this.getMessages());
+    socket.on(ChatEvent.message, value => this.handleMessage(value));
   }
 
   sendMessage(message: ChatMessage) {
-    this.io.sockets.emit('message', message);
+    this.io.sockets.emit(ChatEvent.message, message);
   }
 
   getMessages() {
     this.chat.getMessages().forEach(message => {
-      this.socket.emit('message', message);
+      this.socket.emit(ChatEvent.message, message);
     });
   }
 
@@ -34,7 +41,7 @@ export default class ChatConnection {
     this.chat.getMessages().forEach(message => {
       if (message.user === user) {
         this.chat.deleteMessage(message);
-        this.io.sockets.emit('delete_message', message.id);
+        this.io.sockets.emit(ChatEvent.deleteMessage, message.id);
       }
     });
   }
@@ -47,7 +54,7 @@ export default class ChatConnection {
     this.sendMessage(message);
 
     setTimeout(() => {
-      this.io.sockets.emit('delete_message', message.id);
+      this.io.sockets.emit(ChatEvent.deleteMessage, message.id);
     }, Chat.MESSAGE_LIFETIME_MS);
   }
 
