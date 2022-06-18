@@ -4,9 +4,9 @@ export default class User {
   private id: string;
   private name: string;
 
-  constructor(name: string) {
+  constructor(name?: string) {
     this.id = uuid();
-    this.name = name;
+    this.name = name ?? '';
   }
 
   setName(name: string) {

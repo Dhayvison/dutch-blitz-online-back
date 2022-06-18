@@ -9,26 +9,28 @@ enum GameEvent {
 
 export default class GameConnection {
   private io: Server;
-  private socket: Socket;
   private game: Game;
 
-  constructor(io: Server, socket: Socket) {
-    this.socket = socket;
+  constructor(io: Server) {
     this.io = io;
     this.game = new Game();
+  }
 
-    socket.on(GameEvent.userReady, status => this.handleSetPlayerReady(status));
+  connect(socket: Socket) {
+    socket.on(GameEvent.userReady, status =>
+      this.handleSetPlayerReady(socket, status),
+    );
 
     socket.on(GameEvent.ping, date => {
       socket.emit(GameEvent.pong, date);
     });
   }
 
-  handleSetPlayerReady(status: boolean) {
+  handleSetPlayerReady(socket: Socket, status: boolean) {
     if (status) {
-      this.game.addPlayer(this.socket);
+      this.game.addPlayer(socket);
     } else {
-      this.game.removePlayer(this.socket);
+      this.game.removePlayer(socket);
     }
   }
 }

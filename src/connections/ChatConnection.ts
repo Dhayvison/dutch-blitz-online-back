@@ -12,28 +12,28 @@ enum ChatEvent {
 
 export default class ChatConnection {
   private io: Server;
-  private socket: Socket;
   private chat: Chat;
 
-  constructor(io: Server, socket: Socket) {
-    this.socket = socket;
+  constructor(io?: Server) {
     this.io = io;
     this.chat = new Chat();
+  }
 
-    this.chat.addUser(this.socket, '');
-
-    socket.on(ChatEvent.userName, name => this.handleSetSocketUserName(name));
-    socket.on(ChatEvent.getMessages, () => this.getMessages());
-    socket.on(ChatEvent.message, value => this.handleMessage(value));
+  connect(socket: Socket) {
+    socket.on(ChatEvent.userName, name =>
+      this.handleSetSocketUserName(socket, name),
+    );
+    socket.on(ChatEvent.getMessages, () => this.getMessages(socket));
+    socket.on(ChatEvent.message, text => this.handleMessage(socket, text));
   }
 
   sendMessage(message: ChatMessage) {
     this.io.sockets.emit(ChatEvent.message, message);
   }
 
-  getMessages() {
+  getMessages(socket: Socket) {
     this.chat.getMessages().forEach(message => {
-      this.socket.emit(ChatEvent.message, message);
+      socket.emit(ChatEvent.message, message);
     });
   }
 
@@ -46,9 +46,8 @@ export default class ChatConnection {
     });
   }
 
-  handleMessage(text: string) {
-    const user = this.chat.getUser(this.socket);
-    const message = new ChatMessage(user, text);
+  handleMessage(socket: Socket, text: string) {
+    const message = new ChatMessage(socket.data.user, text);
 
     this.chat.addMessage(message);
     this.sendMessage(message);
@@ -58,8 +57,8 @@ export default class ChatConnection {
     }, Chat.MESSAGE_LIFETIME_MS);
   }
 
-  handleSetSocketUserName(name: string) {
-    const user = this.chat.getUser(this.socket);
+  handleSetSocketUserName(socket: Socket, name: string) {
+    const user = socket.data.user;
     user.setName(name);
     this.cleanMessagesUser(user);
   }
