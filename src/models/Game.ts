@@ -23,4 +23,8 @@ export default class Game {
   removePlayer(socket: Socket) {
     this.players.delete(socket);
   }
+
+  getPlayers() {
+    return this.players;
+  }
 }

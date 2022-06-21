@@ -14,7 +14,7 @@ export default class ChatConnection {
   private io: Server;
   private chat: Chat;
 
-  constructor(io?: Server) {
+  constructor(io: Server) {
     this.io = io;
     this.chat = new Chat();
   }

@@ -3,6 +3,7 @@ import Game from '../models/Game';
 
 enum GameEvent {
   userReady = 'user_ready',
+  players = 'players',
   ping = 'ping',
   pong = 'pong',
 }
@@ -32,5 +33,7 @@ export default class GameConnection {
     } else {
       this.game.removePlayer(socket);
     }
+
+    this.io.sockets.emit(GameEvent.players, this.game.getPlayers().size);
   }
 }
