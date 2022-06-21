@@ -26,6 +26,7 @@ class SocketConnection {
 
       socket.on('disconnect', () => {
         console.log(error`A user is OFFLINE`);
+        this.game.handleSetPlayerReady(socket, false);
       });
 
       socket.on('connect_error', err => {
