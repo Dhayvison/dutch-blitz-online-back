@@ -27,4 +27,8 @@ export default class Game {
   getPlayers() {
     return this.players;
   }
+
+  playersIsReady() {
+    return this.players.size === Game.MAX_PLAYERS_NUM;
+  }
 }

@@ -2,6 +2,7 @@ import { Server, Socket } from 'socket.io';
 import Game from '../models/Game';
 
 enum GameEvent {
+  startGame = 'start_game',
   userReady = 'user_ready',
   players = 'players',
   ping = 'ping',
@@ -35,5 +36,9 @@ export default class GameConnection {
     }
 
     this.io.sockets.emit(GameEvent.players, this.game.getPlayers().size);
+
+    if (this.game.playersIsReady()) {
+      this.io.emit(GameEvent.startGame);
+    }
   }
 }
