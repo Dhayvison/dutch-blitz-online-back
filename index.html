@@ -1,121 +1,141 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <title>Dutch Blitz API</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon_db.png" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
 
-<head>
-  <title>Dutch Blitz Chat</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
 
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
+  <body class="bg-dark text-light">
+    <div class="container mt-5">
+      <h1>
+        <img
+          src="/assets/images/favicon_db.png"
+          class="img-fluid"
+          alt="..."
+          width="26"
+        />
+        Dutch Blitz Online API
+        <small class="text-muted"> v0.1.0 </small>
+      </h1>
+      <small class="text-muted">
+        <strong>ping: </strong> <i id="ping-result">- ms</i>
+      </small>
 
-<body>
-  <div class="btn-group m-3" role="group" aria-label="Basic example">
-    <button class="btn btn-light btn-sm input-group-text p-3" id="ping-test" data-bs-toggle="tooltip"
-      data-bs-placement="right" title="Ping">
-      <span class="material-icons">
-        network_ping
-      </span>
-    </button>
-    <div class="d-flex border border-light p-3" id="ping-result"> - ms </div>
-  </div>
+      <hr />
 
-  <button type="button"
-    class="btn btn-primary position-absolute bottom-0 end-0 m-3 p-3 rounded-circle shadow d-flex justify-content-center align-items-center"
-    data-bs-toggle="modal" data-bs-target="#chat-modal">
-    <span class="material-icons">
-      forum
-    </span>
-  </button>
-
-  <div class="modal fade" id="chat-modal" tabindex="-1" aria-labelledby="chat-modal-label" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="chat-modal-label">
-            Chatzin do Junin
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <ul id="messages" class="list-group list-group-flush"></ul>
-        </div>
-        <div class="modal-footer row">
-          <form id="chat-form" class="col">
-            <label for="messageInput" class="form-label">Digite sua mensagem</label>
-            <div class="input-group">
-              <input type="text" id="messageInput" class="form-control" aria-label="Digite sua mensagem"
-                autocomplete="off"></input>
-              <button type="submit" class="btn btn-primary input-group-text">
-                Enviar
-              </button>
+      <div class="row my-5">
+        <div class="col-md-4">
+          <div class="card bg-dark" style="max-width: 540px">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <img
+                  src="/assets/images/logo_db.png"
+                  class="figure-img img-fluid rounded p-4"
+                  alt="..."
+                />
+              </div>
+              <div class="col-md-8">
+                <div class="card-body d-flex align-items-center">
+                  <h5 class="card-title">
+                    Logo by
+                    <a href="https://www.instagram.com/extherminadora/"
+                      >@extherminadora</a
+                    >
+                  </h5>
+                </div>
+              </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
+
+      <section class="my-5">
+        <h5>Game Events</h5>
+        <hr />
+
+        <div class="table-responsive">
+          <table class="table table-dark table-hover table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Params</th>
+                <th scope="col">Effect</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">
+                  <code>ping</code>
+                </th>
+                <td>
+                  Sends a message to the server containing the current client
+                  date in
+                  <a href="https://www.w3.org/TR/NOTE-datetime">ISO8601</a>
+                  format (YYYY-MM-DDThh:mm:ss.sTZD).
+                </td>
+                <td>
+                  <code> { date: 'string' } </code>
+                </td>
+                <td>
+                  <code> pong </code>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <code>pong</code>
+                </th>
+                <td>
+                  Emit a message to the client containing the current client
+                  date recepted by <code>ping</code>
+                </td>
+                <td>
+                  <code> { date: 'string' } </code>
+                </td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-    crossorigin="anonymous"></script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 
-<script src="/socket.io/socket.io.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
 
-<script>
-  const socket = io();
+  <script>
+    const socket = io();
 
-  const formChat = document.getElementById('chat-form');
-  const inputChat = document.getElementById('messageInput');
-  const messages = document.getElementById('messages');
-  const pingButton = document.getElementById('ping-test');
-  const pingResult = document.getElementById('ping-result');
+    const pingResult = document.getElementById('ping-result');
 
-  formChat.addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (inputChat.value) {
-      socket.emit('chat message', { message: inputChat.value });
-      inputChat.value = '';
-    }
-  });
+    socket.on('pong', ({ date }) => {
+      const nowDate = new Date();
+      const pingDate = new Date(date);
+      pingResult.textContent = `${nowDate - pingDate} ms`;
+    });
 
-  pingButton.addEventListener('click', () => {
-    socket.emit('ping', { date: new Date() });
-  });
-
-  socket.on('pong', ({ date }) => {
-    const nowDate = new Date();
-    const pingDate = new Date(date);
-    pingResult.textContent = `${nowDate - pingDate} ms`
-  });
-
-  socket.on('chat message', function (msg) {
-    var audio = new Audio('/assets/chat-notification.mp3');
-    audio.play();
-    var item = document.createElement('li');
-    var message = document.createElement('b');
-    item.className = 'list-group-item shadow-sm mb-3 border-start border-primary rounded';
-    message.textContent = msg.message;
-
-    item.appendChild(message);
-    messages.appendChild(item);
-    item.scrollIntoView({ block: "end", behavior: "smooth" });
-  });
-
-  socket.on('hi', function (msg) {
-    var item = document.createElement('li');
-    var message = document.createElement('b');
-    item.className = 'list-group-item list-group-item-warning shadow-sm mb-3 border-start border-warning rounded';
-    message.textContent = "Say 'Hello' to new user!";
-
-    item.appendChild(message);
-    messages.appendChild(item);
-    item.scrollIntoView({ block: "nearest", behavior: "smooth" });
-  });
-</script>
-
+    setInterval(() => {
+      socket.emit('ping', { date: new Date() });
+    }, 1000);
+  </script>
 </html>
