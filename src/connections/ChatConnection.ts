@@ -10,13 +10,13 @@ enum ChatEvent {
   deleteMessage = 'delete_message',
 }
 
+const chat = new Chat();
+
 export default class ChatConnection {
   private io: Server;
-  private chat: Chat;
 
   constructor(io: Server) {
     this.io = io;
-    this.chat = new Chat();
   }
 
   connect(socket: Socket) {
@@ -32,15 +32,15 @@ export default class ChatConnection {
   }
 
   getMessages(socket: Socket) {
-    this.chat.getMessages().forEach(message => {
+    chat.getMessages().forEach(message => {
       socket.emit(ChatEvent.message, message);
     });
   }
 
   cleanMessagesUser(user: User) {
-    this.chat.getMessages().forEach(message => {
+    chat.getMessages().forEach(message => {
       if (message.user === user) {
-        this.chat.deleteMessage(message);
+        chat.deleteMessage(message);
         this.io.sockets.emit(ChatEvent.deleteMessage, message.id);
       }
     });
@@ -49,7 +49,7 @@ export default class ChatConnection {
   handleMessage(socket: Socket, text: string) {
     const message = new ChatMessage(socket.data.user, text);
 
-    this.chat.addMessage(message);
+    chat.addMessage(message);
     this.sendMessage(message);
 
     setTimeout(() => {

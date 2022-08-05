@@ -9,13 +9,13 @@ enum GameEvent {
   pong = 'pong',
 }
 
+const game = new Game();
+
 export default class GameConnection {
   private io: Server;
-  private game: Game;
 
   constructor(io: Server) {
     this.io = io;
-    this.game = new Game();
   }
 
   connect(socket: Socket) {
@@ -30,15 +30,17 @@ export default class GameConnection {
 
   handleSetPlayerReady(socket: Socket, status: boolean) {
     if (status) {
-      this.game.addPlayer(socket);
+      game.addPlayer(socket);
     } else {
-      this.game.removePlayer(socket);
+      game.removePlayer(socket);
     }
 
-    this.io.sockets.emit(GameEvent.players, this.game.getPlayers().size);
+    this.io.sockets.emit(GameEvent.players, game.getPlayers().size);
 
-    if (this.game.playersIsReady()) {
-      this.io.emit(GameEvent.startGame);
+    if (game.playersIsReady()) {
+      for (const socket of game.getPlayers().keys()) {
+        socket.emit(GameEvent.startGame);
+      }
     }
   }
 }
