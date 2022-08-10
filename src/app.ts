@@ -13,8 +13,4 @@ app.disable('x-powered-by');
 app.use(router);
 app.use(express.static('public'));
 
-app.get('/status', (...[, response]) => {
-  return response.json({ status: 'running' });
-});
-
 export default app;
