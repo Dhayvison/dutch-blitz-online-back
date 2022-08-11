@@ -1,8 +1,8 @@
 import { v4 as uuid } from 'uuid';
 
 export default class User {
-  private id: string;
-  private name: string;
+  readonly id: string;
+  protected name: string;
 
   constructor(name?: string) {
     this.id = uuid();
