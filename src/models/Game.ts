@@ -10,7 +10,7 @@ export default class Game {
 
   private findPlayer(id: string) {
     return this.players.find(player => {
-      return player.id === id;
+      return player.user.id === id;
     });
   }
 
@@ -25,7 +25,7 @@ export default class Game {
 
   removePlayer(player: Player) {
     const playerIndex = this.players.findIndex(playerItem => {
-      return playerItem.id === player.id;
+      return playerItem.user.id === player.user.id;
     });
 
     return this.players.splice(playerIndex, 1);
