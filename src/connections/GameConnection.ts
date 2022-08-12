@@ -30,17 +30,15 @@ export default class GameConnection {
 
   handleSetPlayerReady(socket: Socket, status: boolean) {
     if (status) {
-      game.addPlayer(socket);
+      game.addPlayer(socket.data.user);
     } else {
-      game.removePlayer(socket);
+      game.removePlayer(socket.data.user);
     }
 
-    this.io.sockets.emit(GameEvent.players, game.getPlayers().size);
+    this.io.sockets.emit(GameEvent.players, game.getPlayers().length);
 
     if (game.playersIsReady()) {
-      for (const socket of game.getPlayers().keys()) {
-        socket.emit(GameEvent.startGame);
-      }
+      this.io.sockets.emit(GameEvent.startGame);
     }
   }
 }

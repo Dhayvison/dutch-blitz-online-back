@@ -1,3 +1,3 @@
 import User from './User';
 
-export default class Player {}
+export default class Player extends User {}
