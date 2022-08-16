@@ -23,26 +23,26 @@ export default class ChatConnection {
     socket.on(ChatEvent.userName, name =>
       this.handleSetSocketUserName(socket, name),
     );
-    socket.on(ChatEvent.getMessages, () => this.getMessages(socket));
+    socket.on(ChatEvent.getMessages, () => this.handleGetMessages(socket));
     socket.on(ChatEvent.message, text => this.handleMessage(socket, text));
   }
 
-  sendMessage(message: ChatMessage) {
+  private sendMessage(message: ChatMessage) {
     this.io.sockets.emit(ChatEvent.message, message);
   }
 
-  getMessages(socket: Socket) {
-    chat.getMessages().forEach(message => {
-      socket.emit(ChatEvent.message, message);
-    });
-  }
-
-  cleanMessagesUser(user: User) {
+  private cleanMessagesUser(user: User) {
     chat.getMessages().forEach(message => {
       if (message.user === user) {
         chat.deleteMessage(message);
         this.io.sockets.emit(ChatEvent.deleteMessage, message.id);
       }
+    });
+  }
+
+  handleGetMessages(socket: Socket) {
+    chat.getMessages().forEach(message => {
+      socket.emit(ChatEvent.message, message);
     });
   }
 
