@@ -1,5 +1,6 @@
 import { Server, Socket } from 'socket.io';
 import Game from '../models/Game';
+import Player from '../models/Player';
 
 enum GameEvent {
   startGame = 'start_game',
@@ -9,13 +10,13 @@ enum GameEvent {
   pong = 'pong',
 }
 
+const game = new Game();
+
 export default class GameConnection {
   private io: Server;
-  private game: Game;
 
   constructor(io: Server) {
     this.io = io;
-    this.game = new Game();
   }
 
   connect(socket: Socket) {
@@ -29,16 +30,19 @@ export default class GameConnection {
   }
 
   handleSetPlayerReady(socket: Socket, status: boolean) {
+    const player =
+      game.getPlayer(socket.data.user.id) ?? new Player(socket.data.user);
+
     if (status) {
-      this.game.addPlayer(socket);
+      game.addPlayer(player);
     } else {
-      this.game.removePlayer(socket);
+      game.removePlayer(player);
     }
 
-    this.io.sockets.emit(GameEvent.players, this.game.getPlayers().size);
+    this.io.sockets.emit(GameEvent.players, game.getPlayers().length);
 
-    if (this.game.playersIsReady()) {
-      this.io.emit(GameEvent.startGame);
+    if (game.playersIsReady()) {
+      this.io.sockets.emit(GameEvent.startGame);
     }
   }
 }

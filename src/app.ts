@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
 import logger from 'morgan';
@@ -12,9 +11,5 @@ app.use(express.json());
 app.disable('x-powered-by');
 app.use(router);
 app.use(express.static('public'));
-
-app.get('/status', (...[, response]) => {
-  return response.json({ status: 'running' });
-});
 
 export default app;

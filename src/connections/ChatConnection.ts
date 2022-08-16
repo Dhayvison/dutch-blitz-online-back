@@ -10,46 +10,46 @@ enum ChatEvent {
   deleteMessage = 'delete_message',
 }
 
+const chat = new Chat();
+
 export default class ChatConnection {
   private io: Server;
-  private chat: Chat;
 
   constructor(io: Server) {
     this.io = io;
-    this.chat = new Chat();
   }
 
   connect(socket: Socket) {
     socket.on(ChatEvent.userName, name =>
       this.handleSetSocketUserName(socket, name),
     );
-    socket.on(ChatEvent.getMessages, () => this.getMessages(socket));
+    socket.on(ChatEvent.getMessages, () => this.handleGetMessages(socket));
     socket.on(ChatEvent.message, text => this.handleMessage(socket, text));
   }
 
-  sendMessage(message: ChatMessage) {
+  private sendMessage(message: ChatMessage) {
     this.io.sockets.emit(ChatEvent.message, message);
   }
 
-  getMessages(socket: Socket) {
-    this.chat.getMessages().forEach(message => {
-      socket.emit(ChatEvent.message, message);
+  private cleanMessagesUser(user: User) {
+    chat.getMessages().forEach(message => {
+      if (message.user === user) {
+        chat.deleteMessage(message);
+        this.io.sockets.emit(ChatEvent.deleteMessage, message.id);
+      }
     });
   }
 
-  cleanMessagesUser(user: User) {
-    this.chat.getMessages().forEach(message => {
-      if (message.user === user) {
-        this.chat.deleteMessage(message);
-        this.io.sockets.emit(ChatEvent.deleteMessage, message.id);
-      }
+  handleGetMessages(socket: Socket) {
+    chat.getMessages().forEach(message => {
+      socket.emit(ChatEvent.message, message);
     });
   }
 
   handleMessage(socket: Socket, text: string) {
     const message = new ChatMessage(socket.data.user, text);
 
-    this.chat.addMessage(message);
+    chat.addMessage(message);
     this.sendMessage(message);
 
     setTimeout(() => {

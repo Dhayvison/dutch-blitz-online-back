@@ -1,27 +1,34 @@
-import { Socket } from 'socket.io';
 import Player from './Player';
 
 export default class Game {
-  private players: Map<Socket, Player>;
-  static MAX_PLAYERS_NUM: number = 4;
+  private players: Player[];
+  static readonly MAX_PLAYERS_NUM: number = 4;
 
   constructor() {
-    this.players = new Map<Socket, Player>();
+    this.players = [];
   }
 
-  addPlayer(socket: Socket) {
-    if (this.players.size < Game.MAX_PLAYERS_NUM) {
-      const player = new Player();
-      this.players.set(socket, player);
-    }
+  private findPlayer(id: string) {
+    return this.players.find(player => {
+      return player.user.id === id;
+    });
   }
 
-  getPlayer(socket: Socket) {
-    return this.players.get(socket);
+  addPlayer(player: Player) {
+    this.players.push(player);
   }
 
-  removePlayer(socket: Socket) {
-    this.players.delete(socket);
+  getPlayer(id: string) {
+    const player = this.findPlayer(id);
+    return player ?? null;
+  }
+
+  removePlayer(player: Player) {
+    const playerIndex = this.players.findIndex(playerItem => {
+      return playerItem.user.id === player.user.id;
+    });
+
+    return this.players.splice(playerIndex, 1);
   }
 
   getPlayers() {
@@ -29,6 +36,6 @@ export default class Game {
   }
 
   playersIsReady() {
-    return this.players.size === Game.MAX_PLAYERS_NUM;
+    return this.players.length === Game.MAX_PLAYERS_NUM;
   }
 }
