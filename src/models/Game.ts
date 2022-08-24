@@ -1,11 +1,16 @@
+import { CardDeck, DeckSymbol } from './CardDeck';
 import Player from './Player';
 
 export default class Game {
   private players: Player[];
   static readonly MAX_PLAYERS_NUM: number = 4;
+  private decks: CardDeck[] = [];
 
   constructor() {
     this.players = [];
+    Object.values(DeckSymbol).forEach(symbol => {
+      this.decks.push(new CardDeck(symbol).generateDeck().shuffle());
+    });
   }
 
   private findPlayer(id: string) {
