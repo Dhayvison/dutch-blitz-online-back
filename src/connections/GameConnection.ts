@@ -1,10 +1,12 @@
 import { Server, Socket } from 'socket.io';
+import { DeckSymbol } from '../models/CardDeck';
 import Game from '../models/Game';
 import Player from '../models/Player';
 
 enum GameEvent {
   startGame = 'start_game',
   userReady = 'user_ready',
+  playerSelectDeck = 'player_select_deck',
   players = 'players',
   ping = 'ping',
   pong = 'pong',
@@ -22,6 +24,10 @@ export default class GameConnection {
   connect(socket: Socket) {
     socket.on(GameEvent.userReady, status =>
       this.handleSetPlayerReady(socket, status),
+    );
+
+    socket.on(GameEvent.playerSelectDeck, symbol =>
+      this.handlePlayerSelectDeck(socket, symbol),
     );
 
     socket.on(GameEvent.ping, date => {
@@ -44,5 +50,19 @@ export default class GameConnection {
     if (game.playersIsReady()) {
       this.io.sockets.emit(GameEvent.startGame);
     }
+  }
+
+  handlePlayerSelectDeck(socket: Socket, symbol: DeckSymbol) {
+    console.log(symbol);
+
+    const player = game.getPlayer(socket.data.user.id);
+    console.log(player);
+
+    if (!player) {
+      throw new Error('Jogador não encontrado');
+    }
+
+    game.setPlayerDeck(player, symbol);
+    console.log(player.getDeck());
   }
 }

@@ -43,4 +43,37 @@ export default class Game {
   playersIsReady() {
     return this.players.length === Game.MAX_PLAYERS_NUM;
   }
+
+  getPlayersDecks() {
+    let test = this.players.map(player => player.getDeck());
+    console.log(this.players);
+
+    return this.players.map(player => player.getDeck());
+  }
+
+  findDeck(symbol: DeckSymbol) {
+    return this.decks.find(deck => {
+      return deck.symbol === symbol;
+    });
+  }
+
+  deckIsSelected(symbol: DeckSymbol) {
+    return this.getPlayersDecks().some(deck => {
+      return deck && deck.symbol === symbol;
+    });
+  }
+
+  setPlayerDeck(player: Player, symbol: DeckSymbol) {
+    if (this.deckIsSelected(symbol)) {
+      throw new Error('O baralho escolhido já foi selecionado');
+    }
+
+    const deck = this.findDeck(symbol);
+
+    if (!deck) {
+      throw new Error('O baralho não encontrado');
+    }
+
+    player.setDeck(deck);
+  }
 }
